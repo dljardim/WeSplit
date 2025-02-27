@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-
 struct ContentView: View {
     
     @State private var checkAmount:Double = 0.00
     @State private var numberOfPeople:Int = 1
     @State private var tipPercentage:Int = 0
+    @FocusState private var amountIsFocused: Bool
     
     let tipPercentages = [10, 15, 20, 25, 0]
     
@@ -42,6 +42,8 @@ struct ContentView: View {
                 Section{
                     TextField("Enter Check Amount", value: $checkAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                         .keyboardType(.decimalPad)
+                        .focused($amountIsFocused)
+                        
                     
                     Picker("Number of People", selection: $numberOfPeople) {
                         ForEach(1..<100){num in
@@ -70,98 +72,24 @@ struct ContentView: View {
                 Section{
                     Text(totalPerPerson, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                 }
-            } // form
-        } // navigation stack
-    }
-}
-
-// if let to check for nil values
-struct ContentView_IfLet: View {
-    
-    @State private var selectedName:String?
-    
-    let names:[String] = ["Ted", "Buddy", "Freddie", "Roxanne", "Amber"]
-    
-    var body: some View{
-        
-        // if let
-        if let sName = selectedName{
-            Text(sName)
-                .font(.headline)
-                .padding()
-        } else {
-            Text("Select a name")
-                .font(.headline)
-                .padding()
-        }
-        
-        List{
-            ForEach(names, id: \.self){name in
-                Text(name).onTapGesture {
-                    selectedName = name
-                }
             }
-        }
-    }
-}
-
-// Nil-Coalescing Operator ?? using optional string
-struct ContentView_NilCoalescing_Optional: View {
-    let names = ["Ted", "Buddy", "Freddie", "Roxanne", "Amber"]
-    @State private var selectedName: String? = nil
-    
-    var body: some View {
-        VStack {
-            Text(selectedName ?? "Select a name")
-                .font(.headline)
-                .padding()
-            
-            List(names, id: \.self) { name in
-                Text(name)
-                    .onTapGesture {
-                        selectedName = name
+            .navigationTitle("WeSplit")
+            //show done top right
+            .toolbar{
+                if(amountIsFocused){
+                    Button("Done"){
+                        amountIsFocused = false
                     }
-            } // list
-        } // vstack
-    }
-}
-
-// Empty string comparison
-struct ContentView_EmptyStringInitializer: View {
-    
-    @State private var selectedName:String = ""
-    
-    let names:[String] = ["Ted", "Buddy", "Freddie", "Roxanne", "Amber"]
-    
-    var body: some View {
-        
-        Text(selectedName.isEmpty ? "Select a name" : "Selected: \(selectedName)")
-            .font(.headline)
-            .padding()
-        
-        List{
-            ForEach(names, id: \.self){name in
-                Text(name).onTapGesture {
-                    selectedName = name
                 }
             }
+                
         }
     }
 }
+
 
 
 #Preview {
     ContentView()
 }
 
-/* *************************************
- 
- VStack{
- ForEach(names, id: \.self){name in
- Text("\(name)").onTapGesture {
- print("Selected: \(name)")
- }
- }
- }
- 
- **************************************/
